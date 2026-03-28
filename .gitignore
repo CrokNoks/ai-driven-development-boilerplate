@@ -1,2 +1,4 @@
 .claude/settings.local.json
 app_build
+production_artifacts
+.agents/state/active.json

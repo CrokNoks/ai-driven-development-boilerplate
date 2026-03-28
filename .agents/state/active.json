@@ -1,3 +1,28 @@
 {
-  "features": {}
+  "mode": "existing",
+  "feature_id": "nextjs_best_practices",
+  "codebase_dir": "app_build/main",
+  "features": {
+    "dev_env_docker": {
+      "mode": "greenfield",
+      "phase": "merged",
+      "spec_path": "production_artifacts/dev_env_docker/Technical_Specification.md",
+      "worktrees": {
+        "engineer": { "status": "merged" },
+        "qa":       { "status": "merged" },
+        "devops":   { "status": "merged" }
+      }
+    },
+    "nextjs_best_practices": {
+      "mode": "existing",
+      "phase": "merged",
+      "codebase_dir": "app_build/main",
+      "spec_path": "production_artifacts/nextjs_best_practices/Technical_Specification.md",
+      "worktrees": {
+        "engineer": { "status": "merged" },
+        "qa":       { "status": "merged" },
+        "devops":   { "status": "merged" }
+      }
+    }
+  }
 }
