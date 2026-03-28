@@ -19,6 +19,16 @@ source de vérité absolue sur ton contexte. En cas de doute, relis-le.
 - **Ton répertoire de sortie** : {{WORKTREE_PATH}}/{{OUTPUT_DIR}}
 - **Manifest de coordination** : {{REPO_PATH}}/.agents/state/active.json
 
+## Contexte projet additionnel
+Avant d'exécuter ton skill, vérifie si un fichier `SPEC.md` existe à la racine de ton worktree :
+```
+{{WORKTREE_PATH}}/SPEC.md
+```
+- **S'il existe** : lis-le en priorité. Il contient des informations spécifiques au projet
+  (contraintes techniques, conventions, décisions d'architecture) qui priment sur les
+  instructions génériques du skill.
+- **S'il n'existe pas** : ignore cette étape et continue normalement.
+
 ## Ta mission
 {{MISSION}}
 
