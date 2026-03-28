@@ -11,3 +11,6 @@ see @.agents/agents/qa.md
 
 ## The DevOps Master (@devops)
 see @.agents/agents/devops.md
+
+## The Code Reviewer (@reviewer)
+see @.agents/agents/reviewer.md

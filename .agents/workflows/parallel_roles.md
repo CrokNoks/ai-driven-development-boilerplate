@@ -13,7 +13,7 @@ exécution parallèle des rôles Engineer, QA, et DevOps.
 [create_worktrees] → 3 worktrees créés + CLAUDE.md injectés
       │
       ├──── Agent Engineer (background) ──────┐
-      ├──── Agent QA      (background) ───────┼──→ [merge_roles] → [deploy]
+      ├──── Agent QA      (background) ───────┼──→ [merge_roles] → [review_pr] → [deploy]
       └──── Agent DevOps  (background) ──────┘
 ```
 
@@ -47,6 +47,21 @@ Tu peux informer l'utilisateur de la progression :
 ### 4. Attendre la complétion
 Attend que les 3 agents soient au statut `"done"` dans `active.json`.
 
-### 5. Merger et déployer
-Exécute le skill `merge_roles.md` pour fusionner les branches,
-puis exécute le skill `deploy_app.md` sur la branche feature fusionnée.
+### 5. Merger les branches
+Exécute le skill `merge_roles.md` pour fusionner les branches des 3 agents
+dans la branche `feature/{FEATURE_ID}`.
+
+### 6. Review et validation (Reviewer)
+Une fois le merge terminé (phase `"merged"` dans `active.json`),
+agis en tant que **@reviewer** et exécute le skill `review_pr.md`.
+
+Ce skill crée une PR GitHub depuis `feature/{FEATURE_ID}` vers `main` dans `app_build/`,
+relire le diff en profondeur, et valide ou rejette selon les standards du projet.
+
+**Attends la décision du Reviewer** avant de continuer :
+- Phase `"review_approved"` → continuer vers le déploiement
+- Phase `"review_failed"` → informer l'utilisateur et **ne pas déployer**
+
+### 7. Déployer
+Si et seulement si la phase est `"review_approved"`,
+exécute le skill `deploy_app.md` depuis la branche `main` de `app_build/`.

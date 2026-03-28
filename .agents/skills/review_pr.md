@@ -1,0 +1,132 @@
+# Skill: Review PR
+
+## Objectif
+Créer une Pull Request GitHub depuis la branche feature fusionnée vers `main` dans le dépôt
+`app_build/`, la relire en profondeur, et la valider ou la rejeter selon les standards du projet.
+
+## Prérequis
+- `FEATURE_ID` fourni en paramètre
+- La phase de la feature dans `active.json` est `"merged"`
+- Le dépôt `app_build/` est un dépôt GitHub (remote `origin` configuré)
+- `gh` CLI est installé et authentifié (`gh auth status`)
+
+## Instructions
+
+### Étape 1 — Lire la spec et le contexte
+Lis les deux fichiers suivants (lecture seule) :
+- `production_artifacts/{FEATURE_ID}/Technical_Specification.md` — la spec approuvée
+- `.agents/state/active.json` — pour récupérer `FEATURE_ID`, `mode` et les chemins
+
+Extrais :
+- Les **fonctionnalités attendues** (section "Functional Requirements" ou équivalent)
+- Les **critères d'acceptation** (section "Acceptance Criteria" ou équivalent)
+- La **stack technique** retenue
+
+### Étape 2 — Vérifier l'état de la branche
+Depuis `app_build/` :
+```bash
+cd {APP_REPO_PATH}
+git log main..feature/{FEATURE_ID} --oneline
+git diff main..feature/{FEATURE_ID} --stat
+```
+
+Si la branche `feature/{FEATURE_ID}` n'existe pas ou n'a pas de commits, **arrête-toi** et informe l'utilisateur.
+
+### Étape 3 — Créer la Pull Request
+Depuis `app_build/`, utilise `gh` pour créer la PR :
+```bash
+cd {APP_REPO_PATH}
+gh pr create \
+  --base main \
+  --head feature/{FEATURE_ID} \
+  --title "feat({FEATURE_ID}): {titre court extrait de la spec}" \
+  --body "$(cat <<'EOF'
+## Résumé
+{résumé en 2-3 phrases extrait de la spec}
+
+## Fonctionnalités implémentées
+{liste des fonctionnalités de la spec}
+
+## Critères d'acceptation
+{liste des critères d'acceptation de la spec}
+
+## Agents impliqués
+- Engineer: implémentation principale (`feature/{FEATURE_ID}-impl`)
+- QA: suite de tests (`feature/{FEATURE_ID}-tests`)
+- DevOps: configuration infra (`feature/{FEATURE_ID}-infra`)
+
+🤖 Générée automatiquement par le pipeline Autonomous AI Developer
+EOF
+)"
+```
+
+Note l'URL de la PR retournée par `gh pr create`.
+
+### Étape 4 — Lire le diff complet
+Récupère le diff complet pour la review :
+```bash
+cd {APP_REPO_PATH}
+git diff main..feature/{FEATURE_ID}
+```
+
+Lis le diff en entier. Pour chaque fichier modifié, identifie sa fonction dans le projet.
+
+### Étape 5 — Review selon les standards
+
+Vérifie les points suivants et note les résultats (✅ OK / ⚠️ avertissement / ❌ bloquant) :
+
+**Conformité à la spec**
+- [ ] Toutes les fonctionnalités listées dans la spec sont présentes dans le code
+- [ ] L'architecture et la stack correspondent aux choix de la spec
+- [ ] Les interfaces/APIs définies dans la spec sont implémentées
+
+**Qualité du code**
+- [ ] Pas de fichiers de debug, de console.log non intentionnels, ni de clés API en dur
+- [ ] Les dépendances déclarées (`package.json`, `requirements.txt`, etc.) correspondent aux imports utilisés
+- [ ] Pas de code mort ou de TODO non résolus bloquants
+
+**Tests**
+- [ ] Des fichiers de tests sont présents (produits par QA)
+- [ ] Les tests couvrent les cas nominaux des fonctionnalités principales
+
+**Infrastructure**
+- [ ] Un fichier de configuration de déploiement est présent (produit par DevOps)
+- [ ] Les variables d'environnement requises sont documentées (`.env.example` ou équivalent)
+
+### Étape 6 — Décision
+
+**Si tous les points sont ✅ ou ⚠️ (aucun ❌) :**
+
+Approuve et merge la PR :
+```bash
+cd {APP_REPO_PATH}
+gh pr review --approve --body "Code conforme à la spec. Review automatique validée par l'agent Reviewer. ✅"
+gh pr merge --merge --subject "feat({FEATURE_ID}): merge to main after review"
+```
+
+Met à jour `active.json` :
+```json
+"phase": "review_approved",
+"pr_url": "{URL_PR}"
+```
+
+Informe l'utilisateur : la PR est mergée sur `main`, le déploiement peut commencer.
+
+---
+
+**Si au moins un point est ❌ (problème bloquant) :**
+
+Poste un commentaire de review détaillé :
+```bash
+cd {APP_REPO_PATH}
+gh pr review --request-changes --body "{description précise de chaque problème bloquant avec les fichiers et lignes concernés}"
+```
+
+Met à jour `active.json` :
+```json
+"phase": "review_failed",
+"pr_url": "{URL_PR}",
+"review_issues": ["{liste des problèmes bloquants}"]
+```
+
+Informe l'utilisateur des problèmes trouvés et demande comment procéder.
