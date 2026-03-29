@@ -1,6 +1,6 @@
 {
   "mode": "existing",
-  "feature_id": "nextjs_best_practices",
+  "feature_id": "historique_stats",
   "codebase_dir": "app_build/main",
   "features": {
     "dev_env_docker": {
@@ -20,6 +20,18 @@
       "spec_path": "production_artifacts/nextjs_best_practices/Technical_Specification.md",
       "worktrees": {
         "engineer": { "status": "merged" },
+        "qa":       { "status": "merged" },
+        "devops":   { "status": "merged" }
+      }
+    },
+    "historique_stats": {
+      "mode": "existing",
+      "phase": "ready_for_review",
+      "codebase_dir": "app_build/main",
+      "spec_path": "production_artifacts/historique_stats/Technical_Specification.md",
+      "pr_url": "https://github.com/CrokNoks/et-shop/pull/5",
+      "worktrees": {
+        "engineer": { "status": "done" },
         "qa":       { "status": "merged" },
         "devops":   { "status": "merged" }
       }
