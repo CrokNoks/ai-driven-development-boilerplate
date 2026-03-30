@@ -27,7 +27,7 @@ Lance un sous-agent avec le prompt suivant :
 ```
 Tu es un agent IA jouant le rôle de Full-Stack Engineer.
 Ton répertoire de travail est : {APP_BUILD_PATH}
-La spec se trouve dans : {REPO_PATH}/production_artifacts/{FEATURE_ID}/Technical_Specification.md
+La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
 
@@ -44,7 +44,7 @@ Lance un sous-agent avec le prompt suivant :
 ```
 Tu es un agent IA jouant le rôle de Test Engineer.
 Ton répertoire de travail est : {APP_BUILD_PATH}
-La spec se trouve dans : {REPO_PATH}/production_artifacts/{FEATURE_ID}/Technical_Specification.md
+La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
 
@@ -60,7 +60,7 @@ Lance un sous-agent avec le prompt suivant :
 ```
 Tu es un agent IA jouant le rôle de Code Reviewer.
 Ton répertoire de travail est : {APP_BUILD_PATH}
-La spec se trouve dans : {REPO_PATH}/production_artifacts/{FEATURE_ID}/Technical_Specification.md
+La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
 

@@ -19,8 +19,10 @@ git pull
 git checkout -b feature/{FEATURE_ID}
 ```
 
-### Étape 2 — Lire le Change Request
-Ouvre `{REPO_PATH}/production_artifacts/{FEATURE_ID}/Technical_Specification.md` et identifie :
+### Étape 2 — Lire le Change Request et la documentation
+Ouvre `{APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md` et identifie :
+Lis également tous les autres fichiers dans `{APP_BUILD_PATH}/docs/{FEATURE_ID}/`
+ainsi que la documentation globale dans `{APP_BUILD_PATH}/docs/` (api.md, architecture.md…).
 - Les fichiers à créer
 - Les fichiers à modifier
 - Les fichiers hors scope (ne pas toucher)

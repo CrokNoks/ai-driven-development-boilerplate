@@ -13,8 +13,9 @@ Créer une Pull Request GitHub depuis la branche feature fusionnée vers `main` 
 ## Instructions
 
 ### Étape 1 — Lire la spec et le contexte
-Lis les deux fichiers suivants (lecture seule) :
-- `production_artifacts/{FEATURE_ID}/Technical_Specification.md` — la spec approuvée
+Lis les fichiers suivants (lecture seule) :
+- `{APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md` — la spec approuvée
+- `{APP_BUILD_PATH}/docs/{FEATURE_ID}/` — toute la documentation de la feature
 - `.agents/state/active.json` — pour récupérer `FEATURE_ID`, `mode` et les chemins
 
 Extrais :

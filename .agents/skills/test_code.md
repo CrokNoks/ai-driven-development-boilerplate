@@ -18,7 +18,8 @@ git checkout feature/{FEATURE_ID}
 ```
 
 ### Étape 2 — Lire la spec et l'implémentation
-Lis `{REPO_PATH}/production_artifacts/{FEATURE_ID}/Technical_Specification.md`.
+Lis `{APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md` ainsi que les autres
+fichiers de documentation dans `{APP_BUILD_PATH}/docs/{FEATURE_ID}/`.
 Explore l'ensemble du code dans `app_build/` pour comprendre l'implémentation.
 
 ### Étape 3 — Identifier les chemins critiques

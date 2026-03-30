@@ -37,8 +37,8 @@ Mettre à jour `.agents/state/active.json` avec `mode` avant de continuer.
 ### Étape 2 — Développement parallèle (Orchestrateur)
 Une fois la spec approuvée, exécute le workflow `parallel_roles.md`.
 
-Ce workflow gère Engineer, QA et DevOps en parallèle sur des worktrees Git isolés.
-Il utilise `CODEBASE_DIR` depuis `active.json` pour router les bons skills :
+Ce workflow gère Engineer, Tester et Reviewer séquentiellement sur la branche `feature/{FEATURE_ID}`.
+Il route les bons skills selon le mode :
 - Engineer → `generate_code.md` (greenfield) ou `modify_code.md` (existing)
-- QA → `audit_code.md` dans les deux modes
-- DevOps → `deploy_app.md` dans les deux modes
+- Tester → `test_code.md` dans les deux modes
+- Reviewer → `review_pr.md` dans les deux modes

@@ -10,9 +10,11 @@ Créer la branche feature et implémenter l'application complète selon la spec 
 
 ## Instructions
 
-### Étape 1 — Lire la spec
-Ouvre et étudie attentivement `{REPO_PATH}/production_artifacts/{FEATURE_ID}/Technical_Specification.md`.
+### Étape 1 — Lire la spec et la documentation
+Ouvre et étudie attentivement `{APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md`.
 Identifie la stack technique, les fonctionnalités et l'architecture attendues.
+Lis également tous les autres fichiers présents dans `{APP_BUILD_PATH}/docs/{FEATURE_ID}/`
+(architecture, data model, API…) — ils font partie du brief.
 
 ### Étape 2 — Créer la branche feature
 ```bash
@@ -38,6 +40,7 @@ git commit -m "feat({FEATURE_ID}): implémentation initiale par l'agent Engineer
 
 ### Étape 5 — Mettre à jour le manifest
 Dans `{REPO_PATH}/.agents/state/active.json` :
+(REPO_PATH = répertoire de l'orchestrateur, pas app_build)
 ```json
 "features": {
   "{FEATURE_ID}": {
