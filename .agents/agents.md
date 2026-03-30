@@ -9,8 +9,8 @@ see @.agents/agents/engineer.md
 ## The QA Engineer (@qa)
 see @.agents/agents/qa.md
 
-## The DevOps Master (@devops)
-see @.agents/agents/devops.md
+## The Test Engineer (@tester)
+see @.agents/agents/tester.md
 
 ## The Code Reviewer (@reviewer)
 see @.agents/agents/reviewer.md

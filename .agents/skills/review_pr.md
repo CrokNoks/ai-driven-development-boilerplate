@@ -6,7 +6,7 @@ Créer une Pull Request GitHub depuis la branche feature fusionnée vers `main` 
 
 ## Prérequis
 - `FEATURE_ID` fourni en paramètre
-- La phase de la feature dans `active.json` est `"merged"`
+- La phase de la feature dans `active.json` est `"tester_done"`
 - Le dépôt `app_build/` est un dépôt GitHub (remote `origin` configuré)
 - `gh` CLI est installé et authentifié (`gh auth status`)
 
@@ -51,9 +51,8 @@ gh pr create \
 {liste des critères d'acceptation de la spec}
 
 ## Agents impliqués
-- Engineer: implémentation principale (`feature/{FEATURE_ID}-impl`)
-- QA: suite de tests (`feature/{FEATURE_ID}-tests`)
-- DevOps: configuration infra (`feature/{FEATURE_ID}-infra`)
+- Engineer: implémentation (`feature/{FEATURE_ID}`)
+- Tester: suite de tests (`feature/{FEATURE_ID}`)
 
 🤖 Générée automatiquement par le pipeline Autonomous AI Developer
 EOF
@@ -88,10 +87,6 @@ Vérifie les points suivants et note les résultats (✅ OK / ⚠️ avertisseme
 **Tests**
 - [ ] Des fichiers de tests sont présents (produits par QA)
 - [ ] Les tests couvrent les cas nominaux des fonctionnalités principales
-
-**Infrastructure**
-- [ ] Un fichier de configuration de déploiement est présent (produit par DevOps)
-- [ ] Les variables d'environnement requises sont documentées (`.env.example` ou équivalent)
 
 ### Étape 6 — Décision
 

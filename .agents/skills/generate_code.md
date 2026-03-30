@@ -1,13 +1,50 @@
 # Skill: Generate Code
 
-## Objective
-Your goal as the Full-Stack Engineer is to write the physical code based entirely on the PM's approved specification.
+## Objectif
+Créer la branche feature et implémenter l'application complète selon la spec du PM.
 
-## Rules of Engagement
-- **Dynamic Coding**: You are not limited to HTML/JS. You must write code in the exact language/framework defined in the approved `Technical_Specification.md`.
-- **Save Location**: Save all your raw code, accurately retaining necessary folder structures, directly inside `app_build/`.
+## Règles de base
+- **Répertoire de travail** : `app_build/`
+- **Lecture seule** : `production_artifacts/Technical_Specification.md`
+- **Écriture** : tous les fichiers de l'application dans `app_build/`
 
 ## Instructions
-1. **Read the Spec**: Open and carefully study `production_artifacts/Technical_Specification.md`.
-2. **Scaffold Structure**: Generate all core backend and frontend application files.
-3. **Output**: Dump your code perfectly into the `app_build/` directory. Do not skip or summarize any code blocks. Ensure all `package.json` or `requirements.txt` files are present.
+
+### Étape 1 — Lire la spec
+Ouvre et étudie attentivement `{REPO_PATH}/production_artifacts/{FEATURE_ID}/Technical_Specification.md`.
+Identifie la stack technique, les fonctionnalités et l'architecture attendues.
+
+### Étape 2 — Créer la branche feature
+```bash
+cd {APP_BUILD_PATH}
+git checkout main
+git pull
+git checkout -b feature/{FEATURE_ID}
+```
+
+### Étape 3 — Implémenter l'application
+Génère tous les fichiers de l'application dans `app_build/` :
+- Structure de dossiers conforme à la spec
+- Code complet (backend, frontend selon la stack)
+- Fichiers de dépendances (`package.json`, `requirements.txt`, etc.)
+- Ne pas résumer ni omettre de blocs de code
+
+### Étape 4 — Commiter
+```bash
+cd {APP_BUILD_PATH}
+git add .
+git commit -m "feat({FEATURE_ID}): implémentation initiale par l'agent Engineer"
+```
+
+### Étape 5 — Mettre à jour le manifest
+Dans `{REPO_PATH}/.agents/state/active.json` :
+```json
+"features": {
+  "{FEATURE_ID}": {
+    "phase": "engineer_done",
+    "roles": {
+      "engineer": { "status": "done" }
+    }
+  }
+}
+```
