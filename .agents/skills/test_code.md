@@ -42,9 +42,34 @@ Nomme les tests de façon explicite pour qu'un lecteur comprenne ce qui est test
 
 ### Étape 5 — Exécuter les tests
 Lance la suite de tests et note les résultats.
-- Si des tests échouent à cause d'un **bug dans l'implémentation** : note-le dans le rapport,
-  ne modifie pas l'implémentation (c'est au Reviewer de décider).
 - Si des tests échouent à cause d'un **problème dans le test lui-même** : corrige et relance.
+- Si des tests échouent à cause d'un **bug dans l'implémentation** : escalade vers l'Engineer
+  (voir Phase 5.5 ci-dessous).
+
+### Phase 5.5 — Escalade vers l'Engineer (si nécessaire)
+
+Si des bugs bloquent le bon déroulement des tests, tu peux faire appel à l'Engineer.
+
+Lance un sous-agent avec le prompt suivant :
+
+```
+Tu es un agent IA jouant le rôle de Full-Stack Engineer.
+Ton répertoire de travail est : {APP_BUILD_PATH}
+Branche courante : feature/{FEATURE_ID}
+La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
+Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
+
+Le Tester a identifié les bugs suivants qui empêchent les tests de passer :
+{LISTE DES BUGS}
+
+Corrige uniquement ces bugs dans l'implémentation. Ne modifie pas les fichiers de tests.
+Commite tes corrections : git commit -m "fix({FEATURE_ID}): corrections suite aux retours du Tester"
+```
+
+Attends que l'Engineer ait terminé, puis **relance les tests** (retour à l'Étape 5).
+
+Limite : maximum **2 allers-retours** avec l'Engineer. Si les tests échouent encore après 2 cycles,
+note les problèmes restants dans le rapport et continue.
 
 ### Étape 6 — Générer le rapport
 Crée `tests/TEST_REPORT.md` :
