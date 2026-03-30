@@ -1,8 +1,8 @@
-# Workflow: Parallel Roles
+# Workflow: Sequential Roles
 
 Ce workflow est déclenché après l'approbation de la spec par l'utilisateur.
-Il remplace les étapes 2-4 du workflow `startcycle.md` (séquentiel) par une
-exécution parallèle des rôles Engineer, QA, et DevOps.
+L'Engineer crée la branche feature, puis chaque agent travaille séquentiellement
+sur cette même branche.
 
 ## Vue d'ensemble
 
@@ -10,58 +10,64 @@ exécution parallèle des rôles Engineer, QA, et DevOps.
 [Spec approuvée]
       │
       ▼
-[create_worktrees] → 3 worktrees créés + CLAUDE.md injectés
+  Engineer → crée feature/{FEATURE_ID}, implémente, commit
       │
-      ├──── Agent Engineer (background) ──────┐
-      ├──── Agent QA      (background) ───────┼──→ [merge_roles] → [review_pr] → [deploy]
-      └──── Agent DevOps  (background) ──────┘
+      ▼
+   Tester → écrit et exécute les tests, commit
+      │
+      ▼
+ Reviewer → review + PR → merge main
 ```
 
 ## Étapes
 
-### 1. Préparer les worktrees
-Agis en tant qu'**Orchestrateur** et exécute le skill `create_worktrees.md`.
-Ce skill crée les 3 worktrees, injecte les CLAUDE.md et met à jour `active.json`.
-
-### 2. Lancer les 3 agents en parallèle
-Lance 3 sous-agents simultanément (run_in_background: true), un par rôle.
-Pour chaque agent, le prompt suit ce modèle :
+### 1. Lancer l'agent Engineer
+Lance un sous-agent avec le prompt suivant :
 
 ```
-Tu es un agent IA travaillant dans un worktree Git isolé.
-Ton répertoire de travail est : {WORKTREE_PATH}
-Commence par lire le fichier CLAUDE.md situé à {WORKTREE_PATH}/CLAUDE.md.
-Ce fichier contient ton briefing complet, tes règles absolues, et le skill à exécuter.
-Suis-le à la lettre.
+Tu es un agent IA jouant le rôle de Full-Stack Engineer.
+Ton répertoire de travail est : {APP_BUILD_PATH}
+La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
+Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
+Le FEATURE_ID est : {FEATURE_ID}
+
+Lis le skill {REPO_PATH}/.agents/skills/generate_code.md (greenfield)
+           ou {REPO_PATH}/.agents/skills/modify_code.md  (existing)
+et exécute-le à la lettre.
 ```
 
-Les 3 agents ont chacun leur propre chemin de worktree issu du manifest `active.json`.
+Attends que l'Engineer ait le statut `"done"` dans `active.json` avant de continuer.
 
-### 3. Monitorer la progression
-Surveille `.agents/state/active.json` pour suivre le statut des agents.
-Tu peux informer l'utilisateur de la progression :
-- `running` → en cours
-- `done`    → terminé
-- `error`   → échec (demander à l'utilisateur comment procéder)
+### 2. Lancer l'agent Tester
+Lance un sous-agent avec le prompt suivant :
 
-### 4. Attendre la complétion
-Attend que les 3 agents soient au statut `"done"` dans `active.json`.
+```
+Tu es un agent IA jouant le rôle de Test Engineer.
+Ton répertoire de travail est : {APP_BUILD_PATH}
+La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
+Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
+Le FEATURE_ID est : {FEATURE_ID}
 
-### 5. Merger les branches
-Exécute le skill `merge_roles.md` pour fusionner les branches des 3 agents
-dans la branche `feature/{FEATURE_ID}`.
+Lis le skill {REPO_PATH}/.agents/skills/test_code.md
+et exécute-le à la lettre.
+```
 
-### 6. Review et validation (Reviewer)
-Une fois le merge terminé (phase `"merged"` dans `active.json`),
-agis en tant que **@reviewer** et exécute le skill `review_pr.md`.
+Attends que le Tester ait le statut `"done"` dans `active.json` avant de continuer.
 
-Ce skill crée une PR GitHub depuis `feature/{FEATURE_ID}` vers `main` dans `app_build/`,
-relire le diff en profondeur, et valide ou rejette selon les standards du projet.
+### 3. Lancer l'agent Reviewer
+Lance un sous-agent avec le prompt suivant :
 
-**Attends la décision du Reviewer** avant de continuer :
-- Phase `"review_approved"` → continuer vers le déploiement
-- Phase `"review_failed"` → informer l'utilisateur et **ne pas déployer**
+```
+Tu es un agent IA jouant le rôle de Code Reviewer.
+Ton répertoire de travail est : {APP_BUILD_PATH}
+La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
+Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
+Le FEATURE_ID est : {FEATURE_ID}
 
-### 7. Déployer
-Si et seulement si la phase est `"review_approved"`,
-exécute le skill `deploy_app.md` depuis la branche `main` de `app_build/`.
+Lis le skill {REPO_PATH}/.agents/skills/review_pr.md
+et exécute-le à la lettre.
+```
+
+**Attends la décision du Reviewer** :
+- Phase `"review_approved"` → la PR est mergée sur `main`, pipeline terminé
+- Phase `"review_failed"` → informe l'utilisateur des problèmes et demande comment procéder

@@ -1,64 +1,61 @@
 # Skill: Modify Code
 
 ## Objectif
-Appliquer les modifications décrites dans le Change Request sur une codebase existante.
-Ce skill remplace `generate_code.md` en mode `--existing`.
-
-## Différence avec generate_code.md
-`generate_code.md` scaffolde une application from scratch dans `app_build/`.
-Ce skill **lit le code existant** et applique des modifications chirurgicales.
+Appliquer les modifications décrites dans le Change Request sur la codebase existante.
+Ce skill remplace `generate_code.md` en mode `existing`.
 
 ## Règles de base
-- **Lire avant d'écrire** : tu ne modifies jamais un fichier sans l'avoir lu en entier
-- **Scope strict** : tu ne touches qu'aux fichiers listés dans le Change Request
-- **Cohérence** : respecte les conventions, patterns et style du code existant
-- **Contrat API** : publie `production_artifacts/api_contract.md` dès que les
-  interfaces sont stabilisées (pour permettre au QA de démarrer)
+- **Lire avant d'écrire** : ne jamais modifier un fichier sans l'avoir lu en entier
+- **Scope strict** : ne toucher qu'aux fichiers listés dans le Change Request
+- **Cohérence** : respecter les conventions, patterns et style du code existant
 
 ## Instructions
 
-### Étape 1 — Lire le Change Request
-Ouvre `production_artifacts/Technical_Specification.md` et identifie :
+### Étape 1 — Créer la branche feature
+```bash
+cd {APP_BUILD_PATH}
+git checkout main
+git pull
+git checkout -b feature/{FEATURE_ID}
+```
+
+### Étape 2 — Lire le Change Request et la documentation
+Ouvre `{APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md` et identifie :
+Lis également tous les autres fichiers dans `{APP_BUILD_PATH}/docs/{FEATURE_ID}/`
+ainsi que la documentation globale dans `{APP_BUILD_PATH}/docs/` (api.md, architecture.md…).
 - Les fichiers à créer
 - Les fichiers à modifier
 - Les fichiers hors scope (ne pas toucher)
-- Les interfaces à implémenter
 
-### Étape 2 — Comprendre le code existant
+### Étape 3 — Comprendre le code existant
 Pour chaque fichier listé dans "Fichiers à modifier" :
 1. Lis le fichier complet
 2. Identifie les fonctions, classes, ou modules impactés
 3. Repère les dépendances internes (imports, appels)
 
-### Étape 3 — Publier le contrat API
-Dès que tu as défini les nouvelles interfaces (fonctions, endpoints, types) :
-Écris `{REPO_PATH}/production_artifacts/api_contract.md` avec :
-```markdown
-# API Contract
-
-## Nouvelles interfaces
-...
-
-## Interfaces modifiées
-...
-
-## Types / Schémas
-...
-```
-Cela permet au QA de démarrer ses tests sans attendre le code complet.
-
 ### Étape 4 — Implémenter les modifications
 Pour chaque fichier à créer ou modifier :
 1. Applique uniquement les changements du Change Request
 2. Respecte le style de code existant (indentation, nommage, patterns)
-3. Ne pas refactoriser du code hors scope, même si tu penses que c'est améliorable
-4. Sauvegarde dans `{WORKTREE_PATH}/{CODEBASE_DIR}/`
+3. Ne pas refactoriser du code hors scope
+4. Vérifie que les imports et dépendances déclarées sont à jour
 
-### Étape 5 — Vérifier la cohérence
-- Vérifie que les imports sont corrects
-- Vérifie que les fichiers modifiés restent syntaxiquement valides
-- Vérifie que les dépendances déclarées dans `package.json` / `requirements.txt` / etc.
-  couvrent les nouvelles librairies utilisées
+### Étape 5 — Commiter
+```bash
+cd {APP_BUILD_PATH}
+git add .
+git commit -m "feat({FEATURE_ID}): modifications par l'agent Engineer"
+```
 
 ### Étape 6 — Mettre à jour le manifest
-`{REPO_PATH}/.agents/state/active.json` → `worktrees.engineer.status = "done"`
+Dans `{REPO_PATH}/.agents/state/active.json` :
+```json
+"features": {
+  "{FEATURE_ID}": {
+    "phase": "engineer_done",
+    "roles": {
+      "engineer": { "status": "done" }
+    }
+  }
+}
+```

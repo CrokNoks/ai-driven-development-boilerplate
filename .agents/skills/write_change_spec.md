@@ -1,81 +1,182 @@
 # Skill: Write Change Spec
 
 ## Objectif
-Analyser une codebase existante et rédiger un **Change Request** précis à partir
-d'une demande de feature. Ce skill remplace `write_specs.md` en mode `--existing`.
+Analyser une codebase existante, clarifier la demande avec l'utilisateur, puis rédiger
+un Change Request précis. Toute la documentation est versionnée dans `app_build/docs/`.
+Ce skill remplace `write_specs.md` en mode `existing`.
 
-## Différence avec write_specs.md
-`write_specs.md` part de zéro et conçoit une architecture complète.
-Ce skill part du code existant et définit **uniquement** ce qui doit changer.
-
-## Prérequis
-- `CODEBASE_DIR` : sous-répertoire contenant la codebase (fourni via active.json)
-- La codebase est versionnée sous Git
+## Chemins
+```
+SPEC_DIR  = app_build/docs/{FEATURE_ID}/
+SPEC_FILE = app_build/docs/{FEATURE_ID}/Technical_Specification.md
+```
 
 ## Instructions
 
-### Étape 1 — Explorer la codebase
-Avant d'écrire une seule ligne de spec, comprends ce qui existe :
+### Phase 1 — Explorer la codebase (silencieusement)
 
-1. Liste la structure du répertoire `{CODEBASE_DIR}/` (2 niveaux de profondeur)
-2. Identifie le stack et le framework utilisé
-3. Repère les fichiers d'entrée principaux (ex: `main.py`, `index.ts`, `app.js`)
-4. Identifie les conventions de nommage, l'organisation des modules, les patterns existants
-5. Lis les tests existants (si présents) pour comprendre les patterns de test utilisés
+Avant d'engager la conversation, explore `app_build/` pour te construire une image claire
+de ce qui existe :
 
-### Étape 2 — Rédiger le Change Request
-Dérive un `FEATURE_ID` court en snake_case (max 20 chars) depuis le nom de la feature.
+1. Structure du répertoire (2 niveaux)
+2. Stack et framework utilisés
+3. Fichiers d'entrée principaux
+4. Conventions de nommage et patterns existants
+5. Documentation existante dans `app_build/docs/` (si présente)
+6. Tests existants (si présents)
+
+---
+
+### Phase 2 — Réflexion avec l'utilisateur
+
+Présente d'abord ce que tu as compris de la codebase en 3-4 lignes, puis pose les questions
+nécessaires pour cadrer la demande :
+
+**Périmètre**
+- Quelles parties du code sont concernées par ce changement ?
+- Qu'est-ce qui doit absolument rester intact ?
+
+**Comportement attendu**
+- Comment cette feature doit-elle se comporter du point de vue utilisateur ?
+- Y a-t-il des cas limites à gérer en priorité ?
+
+**Contraintes**
+- Des contraintes de compatibilité ou de performance à respecter ?
+- La feature doit-elle s'intégrer avec des systèmes externes ?
+
+Adapte selon ce que l'utilisateur a déjà précisé. Attends les réponses.
+
+---
+
+### Phase 3 — Rédaction du Change Request
+
+Dérive un `FEATURE_ID` court en snake_case (max 20 chars).
 Exemple : "Authentification OAuth" → `auth_oauth`
 
-Crée `production_artifacts/{FEATURE_ID}/Technical_Specification.md` avec la structure suivante :
+Crée `app_build/docs/{FEATURE_ID}/Technical_Specification.md` :
 
 ```markdown
-# Change Request : {NOM_FEATURE}
+# Change Request — {NOM DE LA FEATURE}
 
 ## Contexte
 Brève description de la codebase existante et du stack détecté.
 
 ## Demande
-Description précise de la feature ou du changement demandé.
+Description précise du changement à apporter.
 
 ## Stack détecté
-- Langage : ...
-- Framework : ...
-- Gestionnaire de dépendances : ...
-- Répertoire codebase : {CODEBASE_DIR}/
+- Langage :
+- Framework :
+- Gestionnaire de dépendances :
 
 ## Périmètre des modifications
 
 ### Fichiers à créer
 | Fichier | Description |
 |---|---|
-| `{CODEBASE_DIR}/...` | ... |
 
 ### Fichiers à modifier
 | Fichier | Modification |
 |---|---|
-| `{CODEBASE_DIR}/...` | ... |
 
 ### Fichiers à NE PAS toucher
 | Fichier | Raison |
 |---|---|
-| `{CODEBASE_DIR}/...` | ... |
 
 ## Interfaces et contrats
-Description des nouvelles API / fonctions / types à introduire.
-(Sera publié dans `production_artifacts/api_contract.md` par l'Engineer)
+Nouvelles API, fonctions ou types à introduire.
 
 ## Critères d'acceptance
-Liste de conditions vérifiables qui définissent le "done" pour cette feature.
+Liste de conditions vérifiables définissant le "done".
 
 ## Risques de régression
-Parties du code existant qui pourraient être affectées indirectement.
+Parties du code existant potentiellement affectées indirectement.
 ```
 
-### Étape 3 — Sauvegarder et demander l'approbation
-Sauvegarde dans `production_artifacts/{FEATURE_ID}/Technical_Specification.md`.
+---
 
-Demande explicitement à l'utilisateur :
-> "Voici l'analyse de la codebase et le Change Request. Tu peux ouvrir
-> `production_artifacts/Technical_Specification.md` pour modifier ou commenter.
-> Tape **"Approved"** pour lancer le développement parallèle."
+### Phase 4 — Mise à jour de la documentation structurelle
+
+Identifie ce que ce changement impacte au niveau structurel, et mets à jour ou crée les fichiers
+correspondants dans `app_build/docs/` :
+
+| Si la feature impacte… | Mettre à jour… |
+|---|---|
+| Des endpoints ou contrats API | `docs/api.md` (global) ou `docs/{FEATURE_ID}/api.md` (nouveau) |
+| Le modèle de données | `docs/data_model.md` (global) ou `docs/{FEATURE_ID}/data_model.md` |
+| L'architecture générale | `docs/architecture.md` |
+| Des décisions techniques importantes | `docs/{FEATURE_ID}/decisions.md` |
+
+Règle : si le fichier global existe déjà, ajoute une section pour cette feature.
+Si la feature introduit quelque chose de vraiment nouveau, crée un fichier dédié.
+
+---
+
+### Phase 5 — Commit dans app_build/
+
+```bash
+cd app_build/
+git checkout main
+git add docs/{FEATURE_ID}/ docs/api.md docs/data_model.md  # selon ce qui a changé
+git commit -m "docs({FEATURE_ID}): change request et mise à jour de la documentation"
+```
+
+---
+
+### Phase 6 — Présentation dans le chat
+
+```
+---
+**Change Request — {NOM DE LA FEATURE}** (`{FEATURE_ID}`)
+
+**Codebase** : {stack détecté en une ligne}
+
+**Ce qui change** :
+- {fichier ou module 1} → {modification}
+- {fichier ou module 2} → {modification}
+- …
+
+**Ce qui ne change pas** : {liste courte}
+
+**Critères d'acceptance** :
+- {critère 1}
+- {critère 2}
+
+**Risques de régression** : {risques identifiés ou "aucun identifié"}
+
+**Docs mises à jour** : {liste des fichiers créés/modifiés dans docs/}
+---
+Des ajustements ? Ou tape **"Go"** pour lancer le développement.
+```
+
+---
+
+### Phase 7 — Boucle de révision
+
+Si l'utilisateur donne du feedback :
+1. Identifie précisément ce qui change
+2. Mets à jour les fichiers concernés dans `app_build/docs/`
+3. Commite : `git commit -m "docs({FEATURE_ID}): révision suite au feedback"`
+4. Reprends la **Phase 6**
+
+Répète jusqu'à approbation explicite ("Go", "Ok", "C'est bon", "Approved", ou équivalent).
+
+---
+
+### Phase 8 — Handoff
+
+Une fois approuvé, mets à jour `.agents/state/active.json` :
+
+```json
+{
+  "features": {
+    "{FEATURE_ID}": {
+      "mode": "existing",
+      "phase": "spec_approved",
+      "spec_path": "docs/{FEATURE_ID}/Technical_Specification.md"
+    }
+  }
+}
+```
+
+Annonce : **"Change Request validé. Je passe la main à l'Engineer."**
