@@ -17,6 +17,9 @@ sur cette même branche.
       │
       ▼
  Reviewer → review + PR → merge main
+      │
+      ▼
+Doc Writer → fonctionnalites.md, specs.md, points_attention.md, index.md
 ```
 
 ## Étapes
@@ -69,5 +72,23 @@ et exécute-le à la lettre.
 ```
 
 **Attends la décision du Reviewer** :
-- Phase `"review_approved"` → la PR est mergée sur `main`, pipeline terminé
+- Phase `"review_approved"` → la PR est mergée sur `main`, continuer à l'étape 4
 - Phase `"review_failed"` → informe l'utilisateur des problèmes et demande comment procéder
+
+### 4. Lancer l'agent Doc Writer
+Lance un sous-agent avec le prompt suivant :
+
+```
+Tu es un agent IA jouant le rôle de Documentation Writer.
+Ton répertoire de travail est : {APP_BUILD_PATH}
+La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
+Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
+Le FEATURE_ID est : {FEATURE_ID}
+
+Lis le skill {REPO_PATH}/.agents/skills/write_docs.md
+et exécute-le à la lettre.
+```
+
+Attends que le Doc Writer ait le statut `"docs_written"` dans `active.json`.
+
+Une fois terminé : **pipeline complet**, annonce la fin avec le résumé de la documentation produite.

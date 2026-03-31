@@ -26,14 +26,20 @@
     },
     "historique_stats": {
       "mode": "existing",
-      "phase": "ready_for_review",
+      "phase": "docs_written",
       "codebase_dir": "app_build/main",
       "spec_path": "production_artifacts/historique_stats/Technical_Specification.md",
-      "pr_url": "https://github.com/CrokNoks/et-shop/pull/5",
+      "pr_url": "https://github.com/CrokNoks/et-shop/pull/6",
       "worktrees": {
-        "engineer": { "status": "done" },
+        "engineer": { "status": "merged" },
         "qa":       { "status": "merged" },
         "devops":   { "status": "merged" }
+      },
+      "docs": {
+        "fonctionnalites": "docs/historique_stats/fonctionnalites.md",
+        "specs": "docs/historique_stats/specs.md",
+        "points_attention": "docs/historique_stats/points_attention.md",
+        "index": "docs/index.md"
       }
     }
   }

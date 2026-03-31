@@ -14,3 +14,6 @@ see @.agents/agents/tester.md
 
 ## The Code Reviewer (@reviewer)
 see @.agents/agents/reviewer.md
+
+## The Documentation Writer (@doc_writer)
+see @.agents/agents/doc_writer.md
