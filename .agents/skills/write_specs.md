@@ -12,11 +12,14 @@ SPEC_FILE = app_build/docs/{FEATURE_ID}/Technical_Specification.md
 
 ## Instructions
 
-### Phase 1 — Réflexion (avant d'écrire quoi que ce soit)
+### Phase 1 — Réflexion itérative (avant d'écrire quoi que ce soit)
 
-Ne commence PAS à rédiger la spec immédiatement. Engage d'abord une conversation avec l'utilisateur.
+Ne commence PAS à rédiger la spec immédiatement. Engage d'abord une conversation avec l'utilisateur pour affiner le besoin.
 
-Analyse l'idée sous ces angles et pose les questions nécessaires :
+**IMPORTANT : Procède par Q&A itératif.**
+Pose **seulement 1 ou 2 questions** ciblées à la fois pour ne pas noyer l'utilisateur. Attends sa réponse avant d'explorer les points suivants.
+
+Analyse l'idée sous ces angles au fil de la conversation :
 
 **Problème & utilisateurs**
 - Quel problème concret cette app résout-elle ?
@@ -33,10 +36,10 @@ Analyse l'idée sous ces angles et pose les questions nécessaires :
 **Critères de succès**
 - Comment saura-t-on que la feature est "done" ? Quels sont les comportements attendus ?
 
-Pose ces questions de façon conversationnelle — pas en liste exhaustive. Adapte selon ce que
+Pose ces questions de façon conversationnelle et itérative. Adapte selon ce que
 l'utilisateur a déjà précisé. Si l'idée est claire sur un point, ne redemande pas.
 
-Attends les réponses avant de continuer.
+Attends les réponses avant de poser d'autres questions.
 
 ---
 

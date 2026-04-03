@@ -27,10 +27,15 @@ de ce qui existe :
 
 ---
 
-### Phase 2 — Réflexion avec l'utilisateur
+### Phase 2 — Réflexion itérative avec l'utilisateur
 
-Présente d'abord ce que tu as compris de la codebase en 3-4 lignes, puis pose les questions
-nécessaires pour cadrer la demande :
+Présente d'abord ce que tu as compris de la codebase en 3-4 lignes.
+Ensuite, engage la conversation pour cadrer la demande.
+
+**IMPORTANT : Procède par Q&A itératif.**
+Pose **seulement 1 ou 2 questions** ciblées à la fois. Attends la réponse de l'utilisateur avant d'aborder les points suivants.
+
+Sujets à clarifier au fil de la conversation :
 
 **Périmètre**
 - Quelles parties du code sont concernées par ce changement ?
@@ -44,7 +49,7 @@ nécessaires pour cadrer la demande :
 - Des contraintes de compatibilité ou de performance à respecter ?
 - La feature doit-elle s'intégrer avec des systèmes externes ?
 
-Adapte selon ce que l'utilisateur a déjà précisé. Attends les réponses.
+Adapte selon ce que l'utilisateur a déjà précisé. Attends les réponses avant de poser d'autres questions.
 
 ---
 
