@@ -67,6 +67,9 @@ La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specificat
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
 
+Ton rôle CRUCIAL : Vérifier que le code implémente FIDÈLEMENT la spécification technique approuvée.
+Ne laisse passer aucun écart de plan ou dérive de scope.
+
 Lis le skill {REPO_PATH}/.agents/skills/review_pr.md
 et exécute-le à la lettre.
 ```

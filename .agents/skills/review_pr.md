@@ -75,10 +75,11 @@ Lis le diff en entier. Pour chaque fichier modifié, identifie sa fonction dans 
 
 Vérifie les points suivants et note les résultats (✅ OK / ⚠️ avertissement / ❌ bloquant) :
 
-**Conformité à la spec**
-- [ ] Toutes les fonctionnalités listées dans la spec sont présentes dans le code
-- [ ] L'architecture et la stack correspondent aux choix de la spec
-- [ ] Les interfaces/APIs définies dans la spec sont implémentées
+**Vérification de l'Implémentation (vs. Plan Approved)**
+- [ ] **Fidélité au Plan** : Le code implémente-t-il exactement ce qui a été défini dans `Technical_Specification.md` ?
+- [ ] **Dérive de Scope** : Y a-t-il du code superflu non demandé (gold plating) ?
+- [ ] **Fonctionnalités manquantes** : Tous les points du MVP sont-ils couverts ?
+- [ ] **Respect des Contrats** : Les signatures d'API, structures de données et choix de stack sont-ils ceux du plan ?
 
 **Qualité du code**
 - [ ] Pas de fichiers de debug, de console.log non intentionnels, ni de clés API en dur
@@ -86,8 +87,8 @@ Vérifie les points suivants et note les résultats (✅ OK / ⚠️ avertisseme
 - [ ] Pas de code mort ou de TODO non résolus bloquants
 
 **Tests**
-- [ ] Des fichiers de tests sont présents (produits par QA)
-- [ ] Les tests couvrent les cas nominaux des fonctionnalités principales
+- [ ] Des fichiers de tests sont présents et fonctionnels (produits par QA/Tester)
+- [ ] Les tests couvrent les cas nominaux et les critères d'acceptation de la spec
 
 ### Étape 6 — Décision
 
@@ -96,7 +97,7 @@ Vérifie les points suivants et note les résultats (✅ OK / ⚠️ avertisseme
 Approuve et merge la PR :
 ```bash
 cd {APP_REPO_PATH}
-gh pr review --approve --body "Code conforme à la spec. Review automatique validée par l'agent Reviewer. ✅"
+gh pr review --approve --body "Implémentation fidèle à la spécification technique. Review automatique validée par l'agent Reviewer. ✅"
 gh pr merge --merge --subject "feat({FEATURE_ID}): merge to main after review"
 ```
 
