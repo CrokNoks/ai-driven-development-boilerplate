@@ -36,6 +36,11 @@ CODEBASE_DIR   = active.json → features[FEATURE_ID].codebase_dir
 APP_BUILD_PATH = REPO_PATH + "/" + CODEBASE_DIR
                  (exemple : /home/user/mon-projet/app_build/main)
 MODE           = active.json → features[FEATURE_ID].mode  (greenfield | existing)
+TYPE           = active.json → features[FEATURE_ID].type  (feature | bugfix)
+SPEC_PATH      = active.json → features[FEATURE_ID].spec_path
+                 (exemple : docs/my_feature/Technical_Specification.md
+                          ou docs/bugs/login_oauth_redirect/Bug_Report.md)
+BRANCH_PREFIX  = "feature" si TYPE = feature, "fix" si TYPE = bugfix
 ```
 
 Pour obtenir `REPO_PATH` dans le contexte d'un sous-agent, utilise le chemin absolu
@@ -56,13 +61,16 @@ Lance un sous-agent **avec le modèle `sonnet`** avec le prompt suivant (variabl
 ```
 Tu es un agent IA jouant le rôle de Full-Stack Engineer.
 Ton répertoire de travail est : {APP_BUILD_PATH}
-La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
+La spec se trouve dans : {APP_BUILD_PATH}/{SPEC_PATH}
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
+Le TYPE est : {TYPE}  (feature | bugfix)
 
 Lis d'abord le profil du rôle : {REPO_PATH}/.agents/agents/engineer.md
-Puis lis le skill {REPO_PATH}/.agents/skills/generate_code.md (si mode greenfield)
-             ou {REPO_PATH}/.agents/skills/modify_code.md  (si mode existing)
+Puis lis le skill correspondant au type et au mode :
+  - TYPE=feature, MODE=greenfield → {REPO_PATH}/.agents/skills/generate_code.md
+  - TYPE=feature, MODE=existing  → {REPO_PATH}/.agents/skills/modify_code.md
+  - TYPE=bugfix                  → {REPO_PATH}/.agents/skills/fix_bug.md
 et exécute-le à la lettre.
 ```
 
@@ -75,13 +83,16 @@ Lance un sous-agent **avec le modèle `sonnet`** avec le prompt suivant (variabl
 ```
 Tu es un agent IA jouant le rôle de Test Engineer.
 Ton répertoire de travail est : {APP_BUILD_PATH}
-La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
+La spec se trouve dans : {APP_BUILD_PATH}/{SPEC_PATH}
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
+Le TYPE est : {TYPE}
 
 Lis d'abord le profil du rôle : {REPO_PATH}/.agents/agents/tester.md
 Puis lis le skill {REPO_PATH}/.agents/skills/test_code.md
 et exécute-le à la lettre.
+Si TYPE=bugfix, assure-toi que les tests vérifient spécifiquement la correction
+du bug décrit dans le Bug Report (test de non-régression).
 ```
 
 Attends que le statut de la feature dans `active.json` passe à `"tester_done"` avant de continuer.
@@ -93,9 +104,10 @@ Lance un sous-agent **avec le modèle `sonnet`** avec le prompt suivant (variabl
 ```
 Tu es un agent IA jouant le rôle de Code Reviewer.
 Ton répertoire de travail est : {APP_BUILD_PATH}
-La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
+La spec se trouve dans : {APP_BUILD_PATH}/{SPEC_PATH}
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
+Le TYPE est : {TYPE}
 
 Lis d'abord le profil du rôle : {REPO_PATH}/.agents/agents/reviewer.md
 Puis lis le skill {REPO_PATH}/.agents/skills/review_pr.md
@@ -106,14 +118,17 @@ et exécute-le à la lettre.
 - Phase `"review_approved"` → la PR est mergée sur `main`, continuer à l'étape 4
 - Phase `"review_failed"` → informe l'utilisateur des problèmes listés dans `active.json → review_issues` et demande comment procéder
 
-### 4. Lancer l'agent Doc Writer — modèle `haiku`
+### 4. Lancer l'agent Doc Writer — modèle `haiku` *(TYPE = feature uniquement)*
 
-Lance un sous-agent **avec le modèle `haiku`** avec le prompt suivant (variables résolues) :
+**Si `TYPE = bugfix` : saute cette étape** et passe directement à l'étape 5.
+Met à jour `active.json` → `phase: "docs_written"` sans lancer de sous-agent.
+
+Si `TYPE = feature`, lance un sous-agent **avec le modèle `haiku`** :
 
 ```
 Tu es un agent IA jouant le rôle de Documentation Writer.
 Ton répertoire de travail est : {APP_BUILD_PATH}
-La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
+La spec se trouve dans : {APP_BUILD_PATH}/{SPEC_PATH}
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
 
@@ -131,12 +146,14 @@ Lance un sous-agent **avec le modèle `haiku`** avec le prompt suivant (variable
 ```
 Tu es un agent IA chargé de mettre à jour le changelog du projet.
 Ton répertoire de travail est : {APP_BUILD_PATH}
-La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
+La spec se trouve dans : {APP_BUILD_PATH}/{SPEC_PATH}
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
+Le TYPE est : {TYPE}
 
 Lis le skill {REPO_PATH}/.agents/skills/write_changelog.md
 et exécute-le à la lettre.
+Si TYPE=bugfix, utilise le préfixe "Fixed" dans l'entrée changelog (au lieu de "Added").
 ```
 
 Attends que le statut de la feature dans `active.json` passe à `"merged"`.

@@ -8,16 +8,18 @@ Fichier de coordination runtime du pipeline. Mis à jour par chaque agent au fil
 ```json
 {
   "mode": "greenfield | existing",
-  "feature_id": "string — FEATURE_ID de la feature en cours",
+  "type": "feature | bugfix",
+  "feature_id": "string — identifiant de la feature ou du bug en cours",
   "codebase_dir": "string — chemin relatif depuis REPO_PATH (ex: app_build/main)",
   "features": {
     "{FEATURE_ID}": {
+      "type": "feature | bugfix",
       "mode": "greenfield | existing",
       "phase": "voir table des phases ci-dessous",
       "codebase_dir": "string — app_build/main",
-      "spec_path": "string — docs/{FEATURE_ID}/Technical_Specification.md",
+      "spec_path": "string — chemin relatif depuis APP_BUILD_PATH vers le document de référence",
       "pr_url": "string (optionnel) — URL de la PR GitHub",
-      "review_issues": ["string"] ,
+      "review_issues": ["string"],
       "roles": {
         "engineer":   { "status": "done | merged" },
         "tester":     { "status": "done | merged" },
@@ -35,17 +37,25 @@ Fichier de coordination runtime du pipeline. Mis à jour par chaque agent au fil
 }
 ```
 
+### Valeurs de `spec_path` selon le type
+
+| Type | Valeur de `spec_path` |
+|---|---|
+| `feature` (greenfield) | `docs/{FEATURE_ID}/Technical_Specification.md` |
+| `feature` (existing) | `docs/{FEATURE_ID}/Technical_Specification.md` |
+| `bugfix` | `docs/bugs/{BUG_ID}/Bug_Report.md` |
+
 ## Table des phases
 
 | Phase | Déclenché par | Description |
 |---|---|---|
-| `spec_approved` | PM (`write_specs` / `write_change_spec`) | Spec validée par l'utilisateur, pipeline prêt |
-| `engineer_done` | Engineer (`generate_code` / `modify_code`) | Code implémenté et commité |
+| `spec_approved` | PM (`write_specs` / `write_change_spec` / `write_bug_report`) | Document de référence validé par l'utilisateur |
+| `engineer_done` | Engineer (`generate_code` / `modify_code` / `fix_bug`) | Code implémenté/corrigé et commité |
 | `tester_done` | Tester (`test_code`) | Tests écrits, exécutés, rapport généré |
 | `review_approved` | Reviewer (`review_pr`) | PR approuvée et mergée sur main |
 | `review_failed` | Reviewer (`review_pr`) | PR bloquée — problèmes dans `review_issues` |
-| `docs_written` | Doc Writer (`write_docs`) | Documentation produite dans `docs/{FEATURE_ID}/` |
-| `merged` | Changelog (`write_changelog`) | CHANGELOG.md mis à jour — feature complète |
+| `docs_written` | Doc Writer (`write_docs`) ou orchestrateur (bugfix skip) | Documentation produite ou étape ignorée |
+| `merged` | Changelog (`write_changelog`) | CHANGELOG.md mis à jour — feature/fix complet |
 
 ## Statuts des rôles
 
