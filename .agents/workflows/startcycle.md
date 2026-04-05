@@ -71,17 +71,18 @@ Informe l'utilisateur : `"Environnement initialisé — app_build/main/ prêt."`
 
 Mettre à jour `.agents/state/active.json` avec `mode` avant de continuer.
 
-### Étape 1 — Spécification (PM + Assistants)
+### Étape 1 — Spécification (PM + Architect + Assistants)
 
-1. **Phase Q&A (PM)** `[modèle : sonnet]` : Le PM dialogue avec l'utilisateur pour clarifier le besoin.
-2. **Rédaction du brouillon (PM)** `[modèle : sonnet]` :
-   - **Mode greenfield** → exécute `write_specs.md`
+1. **Phase Q&A (PM)** `[modèle : sonnet]` : Le PM dialogue avec l'utilisateur pour clarifier le besoin (QUOI : fonctionnalités, utilisateurs, critères de succès). Le PM dérive le `FEATURE_ID` et le sauvegarde dans `active.json`.
+2. **Recommandation de stack (Architect)** `[modèle : sonnet]` *(greenfield uniquement)* : L'Architect mène un Q&A technique (COMMENT/OÙ : plateforme, environnement, scale, données, équipe) et produit `app_build/docs/{FEATURE_ID}/stack_recommendation.md`. Le PM attend la validation avant de continuer.
+3. **Rédaction du brouillon (PM)** `[modèle : sonnet]` :
+   - **Mode greenfield** → exécute `write_specs.md` (lit `stack_recommendation.md` pour la section Stack)
    - **Mode existing** → exécute `write_change_spec.md`
-3. **Vérification (Assistants)** :
+4. **Vérification (Assistants)** :
    - `@spec_checker` `[modèle : haiku]` → exécute `check_spec_completeness.md`
    - `@spec_challenger` `[modèle : sonnet]` → exécute `challenge_spec_choices.md`
    *(Feedback visible dans le chat)*
-4. **Révision & Présentation (PM)** `[modèle : sonnet]` : Le PM ajuste la spec selon les retours des assistants et la présente pour validation finale.
+5. **Révision & Présentation (PM)** `[modèle : sonnet]` : Le PM ajuste la spec selon les retours des assistants et la présente pour validation finale.
 
 *(Boucle de révision jusqu'à l'approbation explicite de l'utilisateur.)*
 

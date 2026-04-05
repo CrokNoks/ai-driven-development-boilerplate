@@ -48,6 +48,11 @@ Attends les réponses avant de poser d'autres questions.
 Une fois les réponses obtenues, dérive un `FEATURE_ID` court en snake_case (max 20 chars).
 Exemple : "Mon App de Todo" → `todo_app`
 
+**Stack technique** : Avant de rédiger la section Stack, vérifie si
+`app_build/docs/{FEATURE_ID}/stack_recommendation.md` existe. Si oui, utilise son contenu
+pour remplir la section Stack (copie la stack recommandée et la justification). Sinon,
+rédige-la à partir des contraintes récoltées en Q&A.
+
 Crée `app_build/docs/{FEATURE_ID}/Technical_Specification.md` :
 
 ```markdown
@@ -63,9 +68,11 @@ Liste des fonctionnalités incluses dans le scope, avec une description courte p
 Ce qui ne sera PAS implémenté dans cette version.
 
 ## Stack technique
+<!-- Si stack_recommendation.md existe, reprendre ici la stack et la justification. -->
 - Langage / Runtime :
 - Framework principal :
 - Base de données :
+- Hébergement :
 - Autres dépendances notables :
 Justification du choix (1-2 phrases).
 

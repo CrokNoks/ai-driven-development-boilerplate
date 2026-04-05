@@ -3,6 +3,9 @@
 ## The Product Manager (@pm)
 see @.agents/agents/pm.md
 
+## The Solution Architect (@architect)
+see @.agents/agents/architect.md
+
 ## The Spec Completeness Checker (@spec_checker)
 see @.agents/agents/spec_checker.md
 
