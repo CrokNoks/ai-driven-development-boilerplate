@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# Nettoie les worktrees d'une feature ou de toutes les features.
+# Nettoie la branche feature et l'entrée active.json d'une feature ou de toutes.
+# Le worktree app_build/main est permanent — il n'est jamais supprimé.
+#
 # Usage :
-#   bash scripts/clean.sh              → nettoie toutes les features terminées ou en erreur
-#   bash scripts/clean.sh <feature_id> → nettoie une feature spécifique
+#   bash scripts/clean.sh <feature_id>     → nettoie une feature spécifique
+#   bash scripts/clean.sh                  → nettoie toutes les features (avec confirmation)
+#   bash scripts/clean.sh --all-no-confirm → nettoie tout sans demander (usage interne)
 
 set -e
 
@@ -32,43 +35,30 @@ fi
 # ── Fonction de nettoyage d'une feature ───────────────────────────────────────
 clean_feature() {
   local FEATURE_ID="$1"
+  local BRANCH="feature/${FEATURE_ID}"
   echo "→ Nettoyage de la feature : $FEATURE_ID"
 
-  local ROLES=("engineer" "qa" "devops")
-  local BRANCHES=(
-    "feature/${FEATURE_ID}-impl"
-    "feature/${FEATURE_ID}-tests"
-    "feature/${FEATURE_ID}-infra"
-  )
-
-  # Supprimer les worktrees enregistrés dans le bare repo
-  for ROLE in "${ROLES[@]}"; do
-    local WT_PATH="${FEATURE_ID}/${ROLE}"
-    if git -C "$APP_REPO" worktree list | grep -q "$WT_PATH" 2>/dev/null; then
-      echo "  → Suppression du worktree $WT_PATH..."
-      git -C "$APP_REPO" worktree remove --force "$WT_PATH" 2>/dev/null || true
+  # S'assurer que main n'est pas sur la branche feature avant de la supprimer
+  if [ -d "$APP_REPO/main" ]; then
+    CURRENT_BRANCH=$(git -C "$APP_REPO/main" branch --show-current 2>/dev/null || echo "")
+    if [ "$CURRENT_BRANCH" = "$BRANCH" ]; then
+      echo "  → Retour sur main dans le worktree..."
+      git -C "$APP_REPO/main" checkout main 2>/dev/null || true
     fi
-  done
-
-  # Purger les worktrees orphelins (répertoires supprimés sans `worktree remove`)
-  git -C "$APP_REPO" worktree prune 2>/dev/null || true
-
-  # Supprimer les répertoires restants
-  if [ -d "$APP_REPO/$FEATURE_ID" ]; then
-    rm -rf "${APP_REPO:?}/$FEATURE_ID"
-    echo "  ✓ Répertoire app_build/$FEATURE_ID supprimé"
   fi
 
-  # Supprimer les branches
-  for BRANCH in "${BRANCHES[@]}"; do
-    if git -C "$APP_REPO" branch | grep -q "$BRANCH" 2>/dev/null; then
-      git -C "$APP_REPO" branch -D "$BRANCH" 2>/dev/null || true
-      echo "  ✓ Branche $BRANCH supprimée"
-    fi
-  done
+  # Supprimer la branche feature dans le bare repo
+  if git -C "$APP_REPO" branch | grep -q "feature/${FEATURE_ID}$" 2>/dev/null; then
+    git -C "$APP_REPO" branch -D "$BRANCH" 2>/dev/null || true
+    echo "  ✓ Branche $BRANCH supprimée"
+  else
+    echo "  ✓ Branche $BRANCH absente (déjà supprimée ou jamais créée)"
+  fi
+
+  # Purger les worktrees orphelins éventuels
+  git -C "$APP_REPO" worktree prune 2>/dev/null || true
 
   # Mettre à jour le manifest
-  # Supprime l'entrée de la feature (nécessite python3 ou jq)
   if command -v python3 &>/dev/null; then
     python3 - "$MANIFEST" "$FEATURE_ID" <<'EOF'
 import json, sys
@@ -82,20 +72,36 @@ with open(path, "w") as f:
 EOF
     echo "  ✓ Manifest mis à jour"
   else
-    echo "  ⚠  python3 non disponible — mets à jour .agents/state/active.json manuellement"
+    echo "  ⚠  python3 non disponible — retire manuellement $FEATURE_ID de .agents/state/active.json"
   fi
 
   echo ""
 }
 
-# ── Mode : feature spécifique ou toutes ───────────────────────────────────────
-if [ -n "$1" ]; then
+# ── Mode : feature spécifique, toutes, ou toutes sans confirmation ─────────────
+if [ "$1" = "--all-no-confirm" ]; then
+  # Usage interne (appelé par init.sh lors d'une réinitialisation)
+  if command -v python3 &>/dev/null; then
+    FEATURES=$(python3 -c "
+import json
+with open('$MANIFEST') as f:
+    data = json.load(f)
+for fid in data.get('features', {}).keys():
+    print(fid)
+" 2>/dev/null || echo "")
+    while IFS= read -r FEATURE_ID; do
+      [ -n "$FEATURE_ID" ] && clean_feature "$FEATURE_ID"
+    done <<< "$FEATURES"
+  fi
+
+elif [ -n "$1" ]; then
   clean_feature "$1"
+
 else
   # Lister toutes les features dans le manifest
   if command -v python3 &>/dev/null; then
     FEATURES=$(python3 -c "
-import json, sys
+import json
 with open('$MANIFEST') as f:
     data = json.load(f)
 for fid in data.get('features', {}).keys():
