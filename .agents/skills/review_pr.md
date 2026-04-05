@@ -90,6 +90,16 @@ Vérifie les points suivants et note les résultats (✅ OK / ⚠️ avertisseme
 - [ ] Des fichiers de tests sont présents et fonctionnels (produits par QA/Tester)
 - [ ] Les tests couvrent les cas nominaux et les critères d'acceptation de la spec
 
+**Sécurité**
+- [ ] Pas de secrets/credentials dans le diff (clés API, tokens, mots de passe en dur)
+- [ ] Pas de fichier `.env` commité (vérifier avec `git diff main..feature/{FEATURE_ID} -- .env`)
+- [ ] Audit des dépendances sans vulnérabilité critique :
+  ```bash
+  cd {APP_REPO_PATH}
+  npm audit --audit-level=high 2>/dev/null || pip-audit 2>/dev/null || true
+  ```
+- [ ] Pas d'injection évidente (SQL non paramétrée, `exec()`/`eval()`, interpolation de commandes shell)
+
 ### Étape 6 — Décision
 
 **Si tous les points sont ✅ ou ⚠️ (aucun ❌) :**

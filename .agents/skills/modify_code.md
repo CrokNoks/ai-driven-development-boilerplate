@@ -40,14 +40,40 @@ Pour chaque fichier à créer ou modifier :
 3. Ne pas refactoriser du code hors scope
 4. Vérifie que les imports et dépendances déclarées sont à jour
 
-### Étape 5 — Commiter
+### Étape 5 — Valider les modifications
+
+Avant de commiter, vérifie que le code existant + les modifications sont sains.
+
+**Installer les nouvelles dépendances** si la spec en introduit :
+```bash
+npm install 2>/dev/null || pnpm install 2>/dev/null || pip install -r requirements.txt 2>/dev/null || true
+```
+
+**Compiler / vérifier la syntaxe** :
+```bash
+npx tsc --noEmit 2>/dev/null || go build ./... 2>/dev/null || cargo check 2>/dev/null || true
+```
+
+**Linter** :
+```bash
+npm run lint 2>/dev/null || true
+```
+
+**Vérifier l'absence de secrets hardcodés** dans les fichiers modifiés :
+```bash
+git diff --name-only HEAD | xargs grep -lnE "(API_KEY|SECRET|PASSWORD|TOKEN)\s*=\s*[\"'][^\"']{8,}" 2>/dev/null || true
+```
+
+Si build ou lint échoue : corrige avant de commiter (max 1 tentative). Si l'erreur persiste, note-la dans le commit message.
+
+### Étape 6 — Commiter
 ```bash
 cd {APP_BUILD_PATH}
 git add .
 git commit -m "feat({FEATURE_ID}): modifications par l'agent Engineer"
 ```
 
-### Étape 6 — Mettre à jour le manifest
+### Étape 7 — Mettre à jour le manifest
 Dans `{REPO_PATH}/.agents/state/active.json` :
 ```json
 "features": {

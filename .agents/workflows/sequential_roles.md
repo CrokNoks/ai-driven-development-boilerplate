@@ -10,16 +10,19 @@ sur cette même branche.
 [Spec approuvée]
       │
       ▼
-  Engineer → crée feature/{FEATURE_ID}, implémente, commit
+  Engineer → crée feature/{FEATURE_ID}, implémente, valide build/lint, commit
       │
       ▼
    Tester → écrit et exécute les tests, commit
       │
       ▼
- Reviewer → review + PR → merge main
+ Reviewer → review + sécurité + PR → merge main
       │
       ▼
 Doc Writer → fonctionnalites.md, specs.md, points_attention.md, index.md
+      │
+      ▼
+Changelog → CHANGELOG.md mis à jour, phase = merged
 ```
 
 ## Résolution des variables
@@ -114,4 +117,21 @@ et exécute-le à la lettre.
 
 Attends que le statut de la feature dans `active.json` passe à `"docs_written"`.
 
-Une fois terminé : **pipeline complet**, annonce la fin avec le résumé de la documentation produite.
+### 5. Lancer l'agent Changelog
+
+Lance un sous-agent avec le prompt suivant (variables résolues) :
+
+```
+Tu es un agent IA chargé de mettre à jour le changelog du projet.
+Ton répertoire de travail est : {APP_BUILD_PATH}
+La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md
+Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
+Le FEATURE_ID est : {FEATURE_ID}
+
+Lis le skill {REPO_PATH}/.agents/skills/write_changelog.md
+et exécute-le à la lettre.
+```
+
+Attends que le statut de la feature dans `active.json` passe à `"merged"`.
+
+Une fois terminé : **pipeline complet** — annonce la fin avec le résumé de la documentation et l'entrée changelog produite.

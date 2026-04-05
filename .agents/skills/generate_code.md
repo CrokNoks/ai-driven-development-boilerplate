@@ -31,14 +31,56 @@ Génère tous les fichiers de l'application dans `app_build/` :
 - Fichiers de dépendances (`package.json`, `requirements.txt`, etc.)
 - Ne pas résumer ni omettre de blocs de code
 
-### Étape 4 — Commiter
+### Étape 4 — Valider l'implémentation
+
+Avant de commiter, vérifie que le code est sain.
+
+**Installer les dépendances** selon la stack détectée dans la spec :
+```bash
+# Node / npm
+npm install
+# Node / pnpm
+pnpm install
+# Python
+pip install -r requirements.txt
+# Go — pas d'install, les imports sont résolus au build
+# Rust
+cargo fetch
+```
+
+**Compiler / vérifier la syntaxe** si applicable :
+```bash
+# TypeScript
+npx tsc --noEmit
+# Go
+go build ./...
+# Rust
+cargo check
+# Python — pas de compilation, mais vérifier les imports critiques
+python3 -c "import app" 2>/dev/null || true
+```
+
+**Linter** si un script est configuré dans le projet :
+```bash
+npm run lint 2>/dev/null || npx eslint . 2>/dev/null || true
+```
+
+**Vérifier l'absence de secrets hardcodés** :
+```bash
+grep -rn --include="*.ts" --include="*.js" --include="*.py" --include="*.go" \
+  -E "(API_KEY|SECRET|PASSWORD|TOKEN)\s*=\s*[\"'][^\"']{8,}" . || true
+```
+
+Si build ou lint échoue : corrige les erreurs avant de passer à l'étape suivante (max 1 tentative d'auto-correction). Si l'erreur persiste, note-la dans le commit message.
+
+### Étape 5 — Commiter
 ```bash
 cd {APP_BUILD_PATH}
 git add .
 git commit -m "feat({FEATURE_ID}): implémentation initiale par l'agent Engineer"
 ```
 
-### Étape 5 — Mettre à jour le manifest
+### Étape 6 — Mettre à jour le manifest
 Dans `{REPO_PATH}/.agents/state/active.json` :
 (REPO_PATH = répertoire de l'orchestrateur, pas app_build)
 ```json

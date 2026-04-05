@@ -45,7 +45,7 @@ Fichier de coordination runtime du pipeline. Mis à jour par chaque agent au fil
 | `review_approved` | Reviewer (`review_pr`) | PR approuvée et mergée sur main |
 | `review_failed` | Reviewer (`review_pr`) | PR bloquée — problèmes dans `review_issues` |
 | `docs_written` | Doc Writer (`write_docs`) | Documentation produite dans `docs/{FEATURE_ID}/` |
-| `merged` | Orchestrateur | Feature complète, tout archivé |
+| `merged` | Changelog (`write_changelog`) | CHANGELOG.md mis à jour — feature complète |
 
 ## Statuts des rôles
 

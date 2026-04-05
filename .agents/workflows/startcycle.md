@@ -16,6 +16,18 @@ Exemples :
 
 ## Execution Sequence
 
+### Vérifications pré-pipeline
+
+Avant toute autre action, vérifie que l'environnement est opérationnel :
+
+```bash
+git --version
+gh auth status
+```
+
+- Si `git` n'est pas installé → **stop** : "git est requis. Installe-le depuis https://git-scm.com"
+- Si `gh auth status` échoue → **stop** : "gh CLI non authentifié — lance `gh auth login` puis relance /startcycle"
+
 ### Détecter le mode et initialiser l'environnement
 
 Vérifie si `app_build/main/` existe (worktree principal du bare repo) :
