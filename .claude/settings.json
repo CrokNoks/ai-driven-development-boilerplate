@@ -17,6 +17,7 @@
       "Bash(git clone:*)",
       "Bash(git init:*)",
       "Bash(git stash:*)",
+      "Bash(cd:*)",
       "Bash(gh pr create:*)",
       "Bash(gh pr merge:*)",
       "Bash(gh pr review:*)",

@@ -17,13 +17,13 @@ Exemples :
 ## Execution Sequence
 
 ### Détecter le mode
-Vérifie si `app_build/` existe et contient un dépôt Git :
+Vérifie si `app_build/main/` existe (worktree principal du bare repo) :
 
 ```bash
-[ -d app_build/.git ] && echo "existing" || echo "greenfield"
+[ -d app_build/main ] && echo "existing" || echo "greenfield"
 ```
 
-- Si `app_build/.git` existe → `MODE = existing`
+- Si `app_build/main/` existe → `MODE = existing`
 - Sinon → `MODE = greenfield`
 
 Mettre à jour `.agents/state/active.json` avec `mode` avant de continuer.
