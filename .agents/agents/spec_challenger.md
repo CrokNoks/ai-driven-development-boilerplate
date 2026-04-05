@@ -1,3 +1,8 @@
+---
+model: sonnet
+description: Spec Challenger — stress-test des choix techniques de la spec
+---
+
 # The Technical Challenger (@spec_challenger)
 
 ## Identité

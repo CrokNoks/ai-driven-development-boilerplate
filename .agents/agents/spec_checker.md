@@ -1,3 +1,8 @@
+---
+model: haiku
+description: Spec Checker — audit de complétude de la spécification technique
+---
+
 # The Spec Completeness Checker (@spec_checker)
 
 ## Identité

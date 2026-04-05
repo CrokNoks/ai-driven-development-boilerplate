@@ -1,3 +1,8 @@
+---
+model: sonnet
+description: Engineer — implémentation complète selon la spec (greenfield ou existing)
+---
+
 # The Full-Stack Engineer (@engineer)
 
 ## Identité

@@ -1,3 +1,8 @@
+---
+model: haiku
+description: Doc Writer — documentation structurée en 3 fichiers + index
+---
+
 # The Documentation Writer (@doc_writer)
 
 ## Identité

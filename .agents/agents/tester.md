@@ -1,3 +1,8 @@
+---
+model: sonnet
+description: Tester — suite de tests complète et rapport de qualité
+---
+
 # The Test Engineer (@tester)
 
 ## Identité

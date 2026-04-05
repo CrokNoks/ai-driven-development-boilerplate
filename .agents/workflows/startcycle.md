@@ -73,15 +73,15 @@ Mettre à jour `.agents/state/active.json` avec `mode` avant de continuer.
 
 ### Étape 1 — Spécification (PM + Assistants)
 
-1. **Phase Q&A (PM)** : Le PM dialogue avec l'utilisateur pour clarifier le besoin.
-2. **Rédaction du brouillon (PM)** : 
+1. **Phase Q&A (PM)** `[modèle : sonnet]` : Le PM dialogue avec l'utilisateur pour clarifier le besoin.
+2. **Rédaction du brouillon (PM)** `[modèle : sonnet]` :
    - **Mode greenfield** → exécute `write_specs.md`
    - **Mode existing** → exécute `write_change_spec.md`
 3. **Vérification (Assistants)** :
-   - `@spec_checker` → exécute `check_spec_completeness.md`
-   - `@spec_challenger` → exécute `challenge_spec_choices.md`
+   - `@spec_checker` `[modèle : haiku]` → exécute `check_spec_completeness.md`
+   - `@spec_challenger` `[modèle : sonnet]` → exécute `challenge_spec_choices.md`
    *(Feedback visible dans le chat)*
-4. **Révision & Présentation (PM)** : Le PM ajuste la spec selon les retours des assistants et la présente pour validation finale.
+4. **Révision & Présentation (PM)** `[modèle : sonnet]` : Le PM ajuste la spec selon les retours des assistants et la présente pour validation finale.
 
 *(Boucle de révision jusqu'à l'approbation explicite de l'utilisateur.)*
 

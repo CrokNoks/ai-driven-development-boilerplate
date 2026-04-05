@@ -10,19 +10,19 @@ sur cette même branche.
 [Spec approuvée]
       │
       ▼
-  Engineer → crée feature/{FEATURE_ID}, implémente, valide build/lint, commit
+  Engineer (sonnet) → crée feature/{FEATURE_ID}, implémente, valide build/lint, commit
       │
       ▼
-   Tester → écrit et exécute les tests, commit
+   Tester (sonnet) → écrit et exécute les tests, commit
       │
       ▼
- Reviewer → review + sécurité + PR → merge main
+ Reviewer (sonnet) → review + sécurité + PR → merge main
       │
       ▼
-Doc Writer → fonctionnalites.md, specs.md, points_attention.md, index.md
+Doc Writer (haiku) → fonctionnalites.md, specs.md, points_attention.md, index.md
       │
       ▼
-Changelog → CHANGELOG.md mis à jour, phase = merged
+Changelog (haiku) → CHANGELOG.md mis à jour, phase = merged
 ```
 
 ## Résolution des variables
@@ -41,11 +41,17 @@ MODE           = active.json → features[FEATURE_ID].mode  (greenfield | existi
 Pour obtenir `REPO_PATH` dans le contexte d'un sous-agent, utilise le chemin absolu
 du répertoire courant au moment de l'invocation du workflow.
 
+## Modèles par agent
+
+Chaque sous-agent est lancé avec le modèle défini dans le frontmatter de son fichier agent.
+Le modèle est indiqué dans chaque étape ci-dessous. Pour changer le modèle d'un agent,
+modifie le champ `model:` dans `.agents/agents/{role}.md`.
+
 ## Étapes
 
-### 1. Lancer l'agent Engineer
+### 1. Lancer l'agent Engineer — modèle `sonnet`
 
-Lance un sous-agent avec le prompt suivant (variables résolues) :
+Lance un sous-agent **avec le modèle `sonnet`** avec le prompt suivant (variables résolues) :
 
 ```
 Tu es un agent IA jouant le rôle de Full-Stack Engineer.
@@ -54,16 +60,17 @@ La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specificat
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
 
-Lis le skill {REPO_PATH}/.agents/skills/generate_code.md (si mode greenfield)
-           ou {REPO_PATH}/.agents/skills/modify_code.md  (si mode existing)
+Lis d'abord le profil du rôle : {REPO_PATH}/.agents/agents/engineer.md
+Puis lis le skill {REPO_PATH}/.agents/skills/generate_code.md (si mode greenfield)
+             ou {REPO_PATH}/.agents/skills/modify_code.md  (si mode existing)
 et exécute-le à la lettre.
 ```
 
 Attends que le statut de la feature dans `active.json` passe à `"engineer_done"` avant de continuer.
 
-### 2. Lancer l'agent Tester
+### 2. Lancer l'agent Tester — modèle `sonnet`
 
-Lance un sous-agent avec le prompt suivant (variables résolues) :
+Lance un sous-agent **avec le modèle `sonnet`** avec le prompt suivant (variables résolues) :
 
 ```
 Tu es un agent IA jouant le rôle de Test Engineer.
@@ -72,15 +79,16 @@ La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specificat
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
 
-Lis le skill {REPO_PATH}/.agents/skills/test_code.md
+Lis d'abord le profil du rôle : {REPO_PATH}/.agents/agents/tester.md
+Puis lis le skill {REPO_PATH}/.agents/skills/test_code.md
 et exécute-le à la lettre.
 ```
 
 Attends que le statut de la feature dans `active.json` passe à `"tester_done"` avant de continuer.
 
-### 3. Lancer l'agent Reviewer
+### 3. Lancer l'agent Reviewer — modèle `sonnet`
 
-Lance un sous-agent avec le prompt suivant (variables résolues) :
+Lance un sous-agent **avec le modèle `sonnet`** avec le prompt suivant (variables résolues) :
 
 ```
 Tu es un agent IA jouant le rôle de Code Reviewer.
@@ -89,10 +97,8 @@ La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specificat
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
 
-Ton rôle CRUCIAL : Vérifier que le code implémente FIDÈLEMENT la spécification technique approuvée.
-Ne laisse passer aucun écart de plan ou dérive de scope.
-
-Lis le skill {REPO_PATH}/.agents/skills/review_pr.md
+Lis d'abord le profil du rôle : {REPO_PATH}/.agents/agents/reviewer.md
+Puis lis le skill {REPO_PATH}/.agents/skills/review_pr.md
 et exécute-le à la lettre.
 ```
 
@@ -100,9 +106,9 @@ et exécute-le à la lettre.
 - Phase `"review_approved"` → la PR est mergée sur `main`, continuer à l'étape 4
 - Phase `"review_failed"` → informe l'utilisateur des problèmes listés dans `active.json → review_issues` et demande comment procéder
 
-### 4. Lancer l'agent Doc Writer
+### 4. Lancer l'agent Doc Writer — modèle `haiku`
 
-Lance un sous-agent avec le prompt suivant (variables résolues) :
+Lance un sous-agent **avec le modèle `haiku`** avec le prompt suivant (variables résolues) :
 
 ```
 Tu es un agent IA jouant le rôle de Documentation Writer.
@@ -111,15 +117,16 @@ La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specificat
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
 
-Lis le skill {REPO_PATH}/.agents/skills/write_docs.md
+Lis d'abord le profil du rôle : {REPO_PATH}/.agents/agents/doc_writer.md
+Puis lis le skill {REPO_PATH}/.agents/skills/write_docs.md
 et exécute-le à la lettre.
 ```
 
 Attends que le statut de la feature dans `active.json` passe à `"docs_written"`.
 
-### 5. Lancer l'agent Changelog
+### 5. Lancer l'agent Changelog — modèle `haiku`
 
-Lance un sous-agent avec le prompt suivant (variables résolues) :
+Lance un sous-agent **avec le modèle `haiku`** avec le prompt suivant (variables résolues) :
 
 ```
 Tu es un agent IA chargé de mettre à jour le changelog du projet.

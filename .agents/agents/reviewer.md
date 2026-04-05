@@ -1,3 +1,8 @@
+---
+model: sonnet
+description: Reviewer — revue PR approfondie, conformité spec, sécurité, merge
+---
+
 # The Code Reviewer (@reviewer)
 
 ## Identité
