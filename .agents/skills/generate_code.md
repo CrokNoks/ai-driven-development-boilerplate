@@ -4,9 +4,9 @@
 Créer la branche feature et implémenter l'application complète selon la spec du PM.
 
 ## Règles de base
-- **Répertoire de travail** : `app_build/`
-- **Lecture seule** : `production_artifacts/Technical_Specification.md`
-- **Écriture** : tous les fichiers de l'application dans `app_build/`
+- **Répertoire de travail** : `{APP_BUILD_PATH}`
+- **Lecture seule** : `{APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md`
+- **Écriture** : tous les fichiers de l'application dans `{APP_BUILD_PATH}`
 
 ## Instructions
 

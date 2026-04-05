@@ -5,9 +5,9 @@ Créer et exécuter une suite de tests complète pour valider l'implémentation 
 avant la review.
 
 ## Règles de base
-- **Répertoire de travail** : `app_build/` sur la branche `feature/{FEATURE_ID}`
-- **Lecture seule** : `production_artifacts/Technical_Specification.md` et le code existant
-- **Écriture** : fichiers de tests dans `app_build/tests/`
+- **Répertoire de travail** : `{APP_BUILD_PATH}` sur la branche `feature/{FEATURE_ID}`
+- **Lecture seule** : `{APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md` et le code existant
+- **Écriture** : fichiers de tests dans `{APP_BUILD_PATH}/tests/`
 
 ## Instructions
 
