@@ -1,0 +1,64 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(git fetch:*)",
+      "Bash(git merge:*)",
+      "Bash(git worktree:*)",
+      "Bash(git clone:*)",
+      "Bash(git init:*)",
+      "Bash(git stash:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh pr review:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh auth status:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npm info:*)",
+      "Bash(npm test:*)",
+      "Bash(npm ci:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm run:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm format:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm exec:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx next:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx prettier:*)",
+      "Bash(node:*)",
+      "Bash(python3:*)",
+      "Bash(chmod:*)",
+      "Bash(bash scripts/init.sh:*)",
+      "Bash(bash scripts/clean.sh:*)",
+      "WebSearch"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"\nimport os, json\ninp = json.loads(os.environ.get('CLAUDE_TOOL_INPUT', '{}'))\nfp = inp.get('file_path', '')\nif 'active.json' in fp:\n    try:\n        json.load(open(fp))\n        print('\\u2705 active.json valide')\n    except Exception as e:\n        print(f'\\u274c active.json invalide: {e}')\n        exit(2)\n\""
+          }
+        ]
+      }
+    ]
+  }
+}

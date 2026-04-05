@@ -22,10 +22,27 @@ sur cette même branche.
 Doc Writer → fonctionnalites.md, specs.md, points_attention.md, index.md
 ```
 
+## Résolution des variables
+
+Avant de lancer les sous-agents, résous les variables suivantes depuis `active.json` :
+
+```
+REPO_PATH      = répertoire racine de l'orchestrateur (là où se trouve .agents/)
+FEATURE_ID     = active.json → feature_id
+CODEBASE_DIR   = active.json → features[FEATURE_ID].codebase_dir
+APP_BUILD_PATH = REPO_PATH + "/" + CODEBASE_DIR
+                 (exemple : /home/user/mon-projet/app_build/main)
+MODE           = active.json → features[FEATURE_ID].mode  (greenfield | existing)
+```
+
+Pour obtenir `REPO_PATH` dans le contexte d'un sous-agent, utilise le chemin absolu
+du répertoire courant au moment de l'invocation du workflow.
+
 ## Étapes
 
 ### 1. Lancer l'agent Engineer
-Lance un sous-agent avec le prompt suivant :
+
+Lance un sous-agent avec le prompt suivant (variables résolues) :
 
 ```
 Tu es un agent IA jouant le rôle de Full-Stack Engineer.
@@ -34,15 +51,16 @@ La spec se trouve dans : {APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specificat
 Le manifest de coordination est : {REPO_PATH}/.agents/state/active.json
 Le FEATURE_ID est : {FEATURE_ID}
 
-Lis le skill {REPO_PATH}/.agents/skills/generate_code.md (greenfield)
-           ou {REPO_PATH}/.agents/skills/modify_code.md  (existing)
+Lis le skill {REPO_PATH}/.agents/skills/generate_code.md (si mode greenfield)
+           ou {REPO_PATH}/.agents/skills/modify_code.md  (si mode existing)
 et exécute-le à la lettre.
 ```
 
-Attends que l'Engineer ait le statut `"done"` dans `active.json` avant de continuer.
+Attends que le statut de la feature dans `active.json` passe à `"engineer_done"` avant de continuer.
 
 ### 2. Lancer l'agent Tester
-Lance un sous-agent avec le prompt suivant :
+
+Lance un sous-agent avec le prompt suivant (variables résolues) :
 
 ```
 Tu es un agent IA jouant le rôle de Test Engineer.
@@ -55,10 +73,11 @@ Lis le skill {REPO_PATH}/.agents/skills/test_code.md
 et exécute-le à la lettre.
 ```
 
-Attends que le Tester ait le statut `"done"` dans `active.json` avant de continuer.
+Attends que le statut de la feature dans `active.json` passe à `"tester_done"` avant de continuer.
 
 ### 3. Lancer l'agent Reviewer
-Lance un sous-agent avec le prompt suivant :
+
+Lance un sous-agent avec le prompt suivant (variables résolues) :
 
 ```
 Tu es un agent IA jouant le rôle de Code Reviewer.
@@ -76,10 +95,11 @@ et exécute-le à la lettre.
 
 **Attends la décision du Reviewer** :
 - Phase `"review_approved"` → la PR est mergée sur `main`, continuer à l'étape 4
-- Phase `"review_failed"` → informe l'utilisateur des problèmes et demande comment procéder
+- Phase `"review_failed"` → informe l'utilisateur des problèmes listés dans `active.json → review_issues` et demande comment procéder
 
 ### 4. Lancer l'agent Doc Writer
-Lance un sous-agent avec le prompt suivant :
+
+Lance un sous-agent avec le prompt suivant (variables résolues) :
 
 ```
 Tu es un agent IA jouant le rôle de Documentation Writer.
@@ -92,6 +112,6 @@ Lis le skill {REPO_PATH}/.agents/skills/write_docs.md
 et exécute-le à la lettre.
 ```
 
-Attends que le Doc Writer ait le statut `"docs_written"` dans `active.json`.
+Attends que le statut de la feature dans `active.json` passe à `"docs_written"`.
 
 Une fois terminé : **pipeline complet**, annonce la fin avec le résumé de la documentation produite.

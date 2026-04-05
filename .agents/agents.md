@@ -12,9 +12,6 @@ see @.agents/agents/spec_challenger.md
 ## The Full-Stack Engineer (@engineer)
 see @.agents/agents/engineer.md
 
-## The QA Engineer (@qa)
-see @.agents/agents/qa.md
-
 ## The Test Engineer (@tester)
 see @.agents/agents/tester.md
 

@@ -42,10 +42,10 @@ Mettre à jour `.agents/state/active.json` avec `mode` avant de continuer.
 
 *(Boucle de révision jusqu'à l'approbation explicite de l'utilisateur.)*
 
-### Étape 2 — Développement parallèle (Orchestrateur)
-Une fois la spec approuvée, exécute le workflow `parallel_roles.md`.
+### Étape 2 — Développement séquentiel (Orchestrateur)
+Une fois la spec approuvée, exécute le workflow `sequential_roles.md`.
 
-Ce workflow gère Engineer, Tester et Reviewer séquentiellement sur la branche `feature/{FEATURE_ID}`.
+Ce workflow gère Engineer, Tester, Reviewer et Doc Writer séquentiellement sur la branche `feature/{FEATURE_ID}`.
 Il route les bons skills selon le mode :
 - Engineer → `generate_code.md` (greenfield) ou `modify_code.md` (existing)
 - Tester → `test_code.md` dans les deux modes

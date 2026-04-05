@@ -159,6 +159,7 @@ Une fois approuvé, mets à jour `.agents/state/active.json` :
     "{FEATURE_ID}": {
       "mode": "greenfield",
       "phase": "spec_approved",
+      "codebase_dir": "app_build/main",
       "spec_path": "docs/{FEATURE_ID}/Technical_Specification.md"
     }
   }
