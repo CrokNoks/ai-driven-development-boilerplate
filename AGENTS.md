@@ -36,7 +36,7 @@ mon-projet/                           ← répertoire courant (REPO_PATH)
 | `REPO_PATH` | `/chemin/absolu/vers/mon-projet` |
 | `APP_BUILD_PATH` | `{REPO_PATH}/app_build/main` |
 | `FEATURE_ID` | valeur courante dans `active.json → feature_id` |
-| Spec | `{APP_BUILD_PATH}/docs/{FEATURE_ID}/Technical_Specification.md` |
+| `SPEC_PATH` | `active.json → features[FEATURE_ID].spec_path` (relatif à APP_BUILD_PATH) |
 | Manifest | `{REPO_PATH}/.agents/state/active.json` |
 
 ## Pipeline
@@ -45,25 +45,31 @@ mon-projet/                           ← répertoire courant (REPO_PATH)
 /startcycle "idée"
       │
       ▼
-  [Mode ?]─── app_build/.git existe ? ──► existing
-      │                                       │
+  [Mode ?]── app_build/main/ existe ? ──► existing
+      │                                        │
       └── non ──────────────────────────► greenfield
       │
       ▼
-  PM — Q&A + rédaction spec
-      │
-      ▼
-  spec_checker + spec_challenger — retours
-      │
-      ▼
-  PM — révision + approbation utilisateur
-      │
-      ▼
-  sequential_roles.md
-  ├── Engineer  (generate_code / modify_code)
-  ├── Tester    (test_code)
-  ├── Reviewer  (review_pr → merge)
-  └── Doc Writer (write_docs)
+  [Type ?]── mots-clés bug ? ──► bugfix ──► PM write_bug_report → approbation
+      │                                           │
+      └── non ─────────────────────────► feature  │
+      │                                           │
+      ▼                                           │
+  PM — Q&A features                              │
+  Architect (greenfield) — Q&A stack             │
+  PM — write_specs / write_change_spec           │
+  spec_checker + spec_challenger                 │
+  PM — révision + approbation                    │
+      │                                           │
+      └────────────────────┬─────────────────────┘
+                           ▼
+              sequential_roles.md
+  feature ── Engineer  (generate_code / modify_code)
+  bugfix  ── Engineer  (fix_bug)
+             Tester    (test_code)
+             Reviewer  (review_pr → merge)
+  feature ── Doc Writer (write_docs)
+             Changelog (write_changelog)
 ```
 
 ## Phases de active.json
