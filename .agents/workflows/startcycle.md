@@ -16,7 +16,8 @@ Exemples :
 
 ## Execution Sequence
 
-### Détecter le mode
+### Détecter le mode et initialiser l'environnement
+
 Vérifie si `app_build/main/` existe (worktree principal du bare repo) :
 
 ```bash
@@ -24,7 +25,37 @@ Vérifie si `app_build/main/` existe (worktree principal du bare repo) :
 ```
 
 - Si `app_build/main/` existe → `MODE = existing`
-- Sinon → `MODE = greenfield`
+- Sinon → `MODE = greenfield` → **initialiser automatiquement l'environnement**
+
+#### Initialisation automatique (greenfield uniquement)
+
+Si `app_build/main/` n'existe pas, exécute les étapes suivantes **avant** de continuer :
+
+**1. Créer le bare repo s'il n'existe pas :**
+```bash
+if [ ! -d app_build ]; then
+  git init --bare app_build
+fi
+```
+
+**2. Créer un commit initial si le repo est vide :**
+```bash
+if [ -z "$(git -C app_build branch 2>/dev/null)" ]; then
+  TMPDIR_INIT=$(mktemp -d)
+  git init "$TMPDIR_INIT"
+  git -C "$TMPDIR_INIT" commit --allow-empty -m "chore: initial commit"
+  git -C "$TMPDIR_INIT" remote add origin "$(pwd)/app_build"
+  git -C "$TMPDIR_INIT" push origin HEAD:main
+  rm -rf "$TMPDIR_INIT"
+fi
+```
+
+**3. Créer le worktree `app_build/main/` :**
+```bash
+git -C app_build worktree add main main
+```
+
+Informe l'utilisateur : `"Environnement initialisé — app_build/main/ prêt."`
 
 Mettre à jour `.agents/state/active.json` avec `mode` avant de continuer.
 
