@@ -23,3 +23,6 @@ see @.agents/agents/reviewer.md
 
 ## The Documentation Writer (@doc_writer)
 see @.agents/agents/doc_writer.md
+
+## The QA Auditor (@qa)
+see @.agents/agents/qa.md
